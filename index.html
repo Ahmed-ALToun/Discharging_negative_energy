@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number and Text Form</title>
+    <style>
+        body{font-family:Arial,sans-serif;margin:0;padding:0;text-align:center;background-color:#f4f4f4;color:#333;transition:background-color 0.5s,color 0.5s;}
+        body.dark-mode{background-color:#1a1a1a;color:#fff;}
+        h2.animated-text{font-size:4em;font-weight:bold;color:#61dafb;position:relative;overflow:hidden;animation:liquid-motion 2s infinite alternate;margin-top:20px;}
+        body.dark-mode h2.animated-text{color:#fff;}
+        @keyframes liquid-motion{to{clip-path:polygon(0% 0%,100% 0%,100% 100%,0% 100%);transform:translateY(-10%);}}
+        form{max-width:80%;margin:20px auto;background-color:#fff;padding:20px;border-radius:8px;box-shadow:0 0 10px rgba(0,0,0,0.1);transition:background-color 0.5s,color 0.5s;}
+        body.dark-mode form{background-color:#333;color:#fff;}
+        input{width:100%;padding:10px;margin-bottom:16px;box-sizing:border-box;border:1px solid #ccc;border-radius:4px;background-color:#f9f9f9;color:#333;transition:background-color 0.5s,color 0.5s;}
+        body.dark-mode input{background-color:#444;color:#fff;}
+        input[type="submit"]{background-color:#3498db;color:#fff;cursor:pointer;border:none;padding:12px 20px;border-radius:4px;font-size:16px;transition:background-color 0.5s,opacity 0.5s;}
+        input[type="submit"]:hover{background-color:#2980b9;}
+        #result{margin-top:20px;padding:10px;background-color:#ecf0f1;color:#333;border-radius:4px;box-shadow:0 0 5px rgba(0,0,0,0.1);transition:background-color 0.5s,color 0.5s;}
+        body.dark-mode #result{background-color:#555;color:#fff;}
+        #datetime-container{margin-bottom:20px;font-size:18px;color:#3498db;padding:10px;background-color:#fff;border-radius:8px;box-shadow:0 0 5px rgba(0,0,0,0.1);transition:background-color 0.5s,color 0.5s;}
+        body.dark-mode #datetime-container{background-color:#333;color:#fff;}
+        #toggle-dark-mode{cursor:pointer;color:#3498db;font-weight:bold;padding:8px;border:1px solid #3498db;border-radius:4px;margin-bottom:10px;transition:background-color 0.5s,color 0.5s,opacity 0.5s;}
+        #toggle-dark-mode:hover{background-color:#3498db;color:#fff;}
+    </style>
+</head>
+<body>
+    <div id="toggle-dark-mode" onclick="toggleDarkMode()">Toggle Dark Mode</div>
+    <div id="datetime-container"></div>
+    <h2 class="animated-text">XYZA</h2>
+    <h2>الموقع الاول للشتائم</h2>
+    <h2>أدخل "الفاصل الزمني بالثواني" والمسبة</h2>
+    <form onsubmit="repeatText(event)" novalidate>
+        <label for="timeInterval">الفاصل الزمني بالثواني:</label>
+        <input type="number" id="timeInterval" name="timeInterval" required min="1">
+        <label for="textInput">المسبة:</label>
+        <input type="text" id="textInput" name="textInput" placeholder="يلعن أبو الخرسانة والكلية" required>
+        <input type="submit" value="إرسال">
+    </form>
+    <div id="result"></div>
+    <script>
+        function setDarkModePreference(isDarkMode) {
+            localStorage.setItem("darkMode", isDarkMode);
+        }
+
+        function getDarkModePreference() {
+            return localStorage.getItem("darkMode") === "true" || false;
+        }
+
+        function applyDarkMode(isDarkMode) {
+            document.body.classList.toggle("dark-mode", isDarkMode);
+        }
+
+        function applyDarkModeOnLoad() {
+            const initialDarkMode = getDarkModePreference();
+            applyDarkMode(!initialDarkMode);     
+        }
+
+        function toggleDarkMode() {
+            const currentDarkMode = getDarkModePreference();
+            const newDarkMode = !currentDarkMode;
+
+            setDarkModePreference(newDarkMode);
+            applyDarkMode(newDarkMode);
+            showDateTime();
+        }
+
+        function showDateTime() {
+            const dateTimeContainer = document.getElementById("datetime-container");
+            const now = new Date();
+            dateTimeContainer.textContent = "التاريخ والوقت: " + now.toLocaleString();
+        }
+
+        function repeatText(event) {
+            event.preventDefault();
+            const timeInterval = document.getElementById("timeInterval").value;
+            let textInput = document.getElementById("textInput").value.trim() || "يلعن أبو الخرسانة والكلية";
+
+            const resultContainer = document.getElementById("result");
+            resultContainer.innerHTML = "";
+
+            if (timeInterval > 0) {
+                const intervalTime = timeInterval * 1000;
+                setInterval(() => {
+                    const paragraph = document.createElement("p");
+                    paragraph.textContent = textInput;
+                    resultContainer.appendChild(paragraph);
+                }, intervalTime);
+            } else {
+                const errorMessage = document.createElement("p");
+                errorMessage.textContent = "الرجاء إدخال الفاصل الزمني بالثواني.";
+                errorMessage.className = "error";
+                resultContainer.appendChild(errorMessage);
+            }
+        }
+
+        applyDarkModeOnLoad();
+        setInterval(showDateTime, 1000);
+    </script>
+</body>
+</html>
